@@ -31,17 +31,16 @@ The project demonstrates state-of-the-art deep learning techniques including ens
 
 ## Project Architecture
 
-[generated_image:4]
+![Approach Diagram](Analysis_media/Approach_Diagram.png)
 
 The landmark detection pipeline follows a comprehensive workflow:
 
-1. **Data Collection**: Gathering 1400+ balanced images of Singapore landmarks
-2. **Annotation**: Using Roboflow platform for precise bounding box labeling  
-3. **Data Preparation**: Converting to YOLO format with augmentation
-4. **Teacher Training**: Training multiple YOLOv11m/s models as ensemble teachers
-5. **Knowledge Distillation**: Transferring knowledge to compact YOLOv11n student
-6. **Evaluation**: Comprehensive analysis including Grad-CAM++, HiResCAM, and layer visualization
-7. **Deployment**: Optimized models for various deployment scenarios
+1. **Data Collection & Preparation**: Gathering 1400+ balanced images of Singapore landmarks
+2. **Model Training**: A 3-Stage pipeline with original YOLOv11m, enhanced YOLOv11m, and YOLOv11s ensemble
+3. **Knowledge Distillation**: Transferring knowledge to compact YOLOv11n student model
+4. **Ensemble Strategy**: Winner-takes-all and weighted ensemble approaches
+5. **Comprehensive Evaluation**: Advanced interpretability and performance analysis
+6. **Deployment**: Optimized models for various deployment scenarios
 
 ---
 
@@ -116,8 +115,6 @@ The landmark detection pipeline follows a comprehensive workflow:
 - Gradual unfreezing
 
 #### 1.4 Knowledge Distillation Framework
-
-[generated_image:7]
 
 **True Knowledge Distillation Implementation**:
 
@@ -202,7 +199,7 @@ Creates unified comparison video with synchronized predictions:
 
 #### 2.3 Grad-CAM++ Video Analysis
 
-[generated_image:9]
+![Grad-CAM++ Analysis](Analysis_media/Grad-CAM++.mp4)
 
 Advanced attention visualization on video:
 - Frame-by-frame attention heatmaps
@@ -246,7 +243,7 @@ Advanced attention visualization on video:
 
 5. **Hierarchical Layer Features**:
 
-[generated_image:8]
+![Layer Features Analysis](Analysis_media/3_landmarks_layer_features_student_optimized.png)
 
    - **Layer 1 (Edges)**: Low-level edge detection
    - **Layer 2 (Corners)**: Geometric primitives  
@@ -280,19 +277,57 @@ Advanced attention visualization on video:
 - Frame-to-frame prediction smoothness
 - Model reliability assessment
 
-#### 2.6 Comprehensive Comparison Dashboard
+**Confusion Matrix Analysis**:
 
-Unified visualization comparing all interpretability methods:
-- Side-by-side method comparison
-- Statistical comparison tables
-- Method effectiveness evaluation
-- Best practice recommendations
+![Confusion Matrix](Analysis_media/confusion_matrix.png)
+
+![Normalized Confusion Matrix](Analysis_media/confusion_matrix_normalized.png)
+
+Per-class classification performance showing strong diagonal dominance and minimal misclassification between landmarks.
+
+#### 2.6 Performance Metrics Visualization
+
+![Performance Metrics](Analysis_media/Performance_Metrics.png)
+
+Comprehensive performance dashboard showing:
+- Training and validation loss curves
+- mAP progression across epochs
+- Precision-Recall curves
+- F1-score evolution
+- Per-class performance metrics
+
+#### 2.7 Student Model Performance Curves
+
+![Student BoxF1 Curve](Analysis_media/Student_BoxF1_curve.png)
+
+![Student BoxP Curve](Analysis_media/Student_BoxP_curve.png)
+
+![Student BoxR Curve](Analysis_media/Student_BoxR_curve.png)
+
+Student model evaluation curves demonstrating:
+- Confidence threshold sensitivity analysis
+- Precision-confidence relationships
+- Recall-confidence relationships
+- Optimal operating points
+
+#### 2.8 Comprehensive Heatmap Comparison
+
+All-method comparison dashboard comparing interpretability approaches with side-by-side visualization.
+
+#### 2.9 Validation Batch Analysis
+
+![Validation Batch Predictions](Analysis_media/val_batch1_pred.jpg)
+
+Grid visualization showing:
+- 16-image validation batch
+- Yellow bounding boxes with confidence scores
+- Class labels for each detection
+- Real-time detection quality assessment
+- Multi-landmark scene handling
 
 ---
 
 ## Dataset and Preparation
-
-[generated_image:5]
 
 ### Dataset Specifications
 
@@ -313,8 +348,6 @@ Unified visualization comparing all interpretability methods:
 - Pre-processed with static augmentations
 
 ### Labeling Process
-
-[generated_image:6]
 
 **Platform**: Roboflow
 
@@ -572,8 +605,6 @@ final_attention = scale_attention * (1 + rect_mask_smooth * 0.5)
 
 #### 4. Hierarchical Layer Features
 
-[generated_image:8]
-
 **Layer Progression**:
 
 1. **Layer 1 - Edges** (Low-level):
@@ -607,8 +638,6 @@ final_attention = scale_attention * (1 + rect_mask_smooth * 0.5)
    - Edge-blurred composition
 
 ### Validation Batch Analysis
-
-[generated_image:10]
 
 **Visualization**:
 - 16-image grid layout (4×4)
@@ -704,6 +733,17 @@ pip install scikit-learn  # Metrics
 monuai_model/
 ├── landmark_detection_YOLOv11_training.ipynb
 ├── landmark_detection_YOLOv11_analysis.ipynb
+├── Analysis_media/
+│   ├── Approach_Diagram.png
+│   ├── Grad-CAM++.mp4
+│   ├── 3_landmarks_layer_features_student_optimized.png
+│   ├── confusion_matrix.png
+│   ├── confusion_matrix_normalized.png
+│   ├── Performance_Metrics.png
+│   ├── Student_BoxF1_curve.png
+│   ├── Student_BoxP_curve.png
+│   ├── Student_BoxR_curve.png
+│   └── val_batch1_pred.jpg
 ├── YOLOv11m_teacher_enhanced/
 │   └── weights/
 │       └── best.pt
@@ -848,6 +888,7 @@ from ultralytics import YOLO
 from ultralytics.models.yolo.detect import DetectionTrainer
 import torch
 import torch.nn.functional as F
+from copy import deepcopy
 
 class KnowledgeDistillationTrainer(DetectionTrainer):
     def __init__(self, teacher_models, temperature=4.0, alpha=0.3, **kwargs):
@@ -1549,6 +1590,6 @@ For questions, issues, or collaborations related to this project, please open an
 
 **Last Updated**: December 2024
 
-**Version**: 1.0.0
+**Version**: 2.0.0 (Updated with actual analysis media)
 
-**Status**: ✅ Production Ready
+**Status**: ✅ Production Ready with Real Analysis Outputs
